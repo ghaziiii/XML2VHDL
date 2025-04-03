@@ -1,0 +1,25 @@
+<module name="uart_controller">
+    <generic name="GENERIC_WIDTH" type="integer" default="16" comment="generic data width"/>
+    <generic name="GENERIC_DEPTH" type="integer" default="256" comment="generic ram depth"/>
+    
+    <port name="CLK_I" direction="in" type="std_logic" comment="system clock"/>
+    <port name="RST_I" direction="in" type="std_logic" comment="system reset, active high"/>
+    <port name="DATA_I" direction="out" width="8" comment="input data"/>
+	<port name="DATA_O" direction="out" width="8" comment="output data"/>
+    
+    <signal name="S_COUNTER" width="32" default="(others => '0')" comment="internal counter signal"/>
+    <signal name="S_READY" type="std_logic" default="'0'" comment="internal ready signal"/>
+    
+    <register name="CONTROL_REG" width="8">
+        <field name="ENABLE" bits="7" default="0"/>
+        <field name="MODE" bits="6-5" default="01"/>
+    </register>
+    
+    <component name="FIFO" type="FIFO_GENERATOR"/>
+    
+    <process name="P_TX" sensitivity="CLK_I, RST_I">
+    </process>
+    
+    <assignment target="TX_DATA(0)" expression="CONTROL_REG(0)" comment="LSB of tx data"/>
+    <assignment target="TX_DATA(7 downto 1)" expression="(others => '1')" comment="MSBs set high"/>
+</module>
